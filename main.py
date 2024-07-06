@@ -24,7 +24,7 @@ def download_video(url, save_path):
 
 
 dotenv.load_dotenv()
-download_video(os.environ.get("video_url"), 'video.mp4')
+download_video(os.environ.get("VIDEO_URL"), 'video.mp4')
 
 if not os.path.exists('video.mp4'):
     print('文件 video.mp4 不存在！')

@@ -21,8 +21,8 @@ jobs:
           playwright install chromium
       - name: run main
         env:
-          video_url: ${{ secrets.video_url }}
-          gist_id: ${{ secrets.gist_id }}
+          VIDEO_URL: ${{ secrets.VIDEO_URL }}
+          GIST_ID: ${{ secrets.GIST_ID }}
         run: |
-          curl -s -o douyin_cookie.txt "https://api.github.com/gists/$gist_id"
+          curl -s -o douyin_cookie.txt "https://api.github.com/gists/$GIST_ID"
           python main.py

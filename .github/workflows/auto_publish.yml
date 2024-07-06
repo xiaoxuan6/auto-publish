@@ -2,8 +2,8 @@ name: "Auto publish"
 
 on:
   workflow_dispatch:
-  # schedule:
-  # - cron: '0 6-9 * * *'
+  schedule:
+    - cron: '0 6-9/3 * * *'
 
 jobs:
   publish:
@@ -13,7 +13,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-        python-version: '3.10'
+          python-version: '3.10'
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
@@ -24,5 +24,5 @@ jobs:
           VIDEO_URL: ${{ secrets.VIDEO_URL }}
           GIST_ID: ${{ secrets.GIST_ID }}
         run: |
-          curl -s -o douyin_cookie.txt "https://api.github.com/gists/$GIST_ID"
+          curl -s "https://api.github.com/gists/$GIST_ID" | jq -r '.files.douyin_txt.content' > douyin_cookie.txt
           python main.py

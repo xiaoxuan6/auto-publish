@@ -1,0 +1,28 @@
+name: "Auto publish"
+
+on:
+  workflow_dispatch:
+  # schedule:
+  # - cron: '0 6-9 * * *'
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+        python-version: '3.10'
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          playwright install chromium
+      - name: run main
+        env:
+          video_url: ${{ secrets.video_url }}
+          gist_id: ${{ secrets.gist_id }}
+        run: |
+          curl -s -o douyin_cookie.txt "https://api.github.com/gists/$gist_id"
+          python main.py

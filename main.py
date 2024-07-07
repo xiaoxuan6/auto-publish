@@ -1,5 +1,6 @@
 import json
 import os
+import random
 import time
 
 import dotenv
@@ -11,9 +12,18 @@ if not os.path.exists('douyin_cookie.txt'):
     exit(1)
 
 
-def download_video(url, save_path):
-    response = requests.get(url, stream=True)
+def download_video(save_path):
+    urls = (
+        "https://api.shenke.love/api/gzl.php",
+        "https://api.shenke.love/api/mnsp.php?msg=xjj&type=video",
+        "http://api.yujn.cn/api/heisis.php",
+        'http://api.yujn.cn/api/xjj.php',
+        'http://api.yujn.cn/api/zzxjj.php',
+        'https://api.yujn.cn/api/manzhan.php'
+    )
 
+    url = random.choice(urls)
+    response = requests.get(url, stream=True)
     if response.status_code == 200:
         with open(save_path, 'wb') as file:
             for chunk in response.iter_content(chunk_size=8192):
@@ -24,7 +34,7 @@ def download_video(url, save_path):
 
 
 dotenv.load_dotenv()
-download_video(os.environ.get("VIDEO_URL"), 'video.mp4')
+download_video('video.mp4')
 
 if not os.path.exists('video.mp4'):
     print('文件 video.mp4 不存在！')

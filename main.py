@@ -76,6 +76,7 @@ except Exception as e:
         except Exception as e:
             pass
 
+print(f"content：{content}")
 if content.startswith('检测通过') or content.startswith('视频检测失败') or content.startswith('封面优化建议'):
     ele2 = page2.query_selector('//*[@id="root"]/div/div/div[2]/div[1]/div[13]/div[1]/div/div[2]/div/input')
     ele2.hover()

@@ -33,13 +33,6 @@ def download_video(save_path):
         print(f"请求失败，状态码: {response.status_code}")
 
 
-dotenv.load_dotenv()
-download_video('video.mp4')
-
-if not os.path.exists('video.mp4'):
-    print('文件 video.mp4 不存在！')
-    exit(1)
-
 playwright = sync_playwright().start()
 browser = playwright.chromium.launch(headless=True)
 
@@ -52,12 +45,17 @@ page1.goto('https://www.douyin.com/?recommend=1')
 time.sleep(10)
 
 i = 0
+dotenv.load_dotenv()
 while True:
     if i == 3:
         print('重试次数过多！')
         break
 
     try:
+        download_video('video.mp4')
+        if not os.path.exists('video.mp4'):
+            raise Exception('文件 video.mp4 不存在！')
+
         page2 = context.new_page()
         page2.goto('https://creator.douyin.com/creator-micro/content/upload?enter_from=dou_web')
         time.sleep(15)
@@ -86,13 +84,14 @@ while True:
         print(f"content：{content}")
         if len(content) == 0:
             i = i + 1
-            download_video('video.mp4')
+            page2.close()
+            time.sleep(3)
             raise Exception("无法识别检测结果")
 
         if content.startswith('检测通过') or content.startswith('视频检测失败') or content.startswith('封面优化建议'):
-            ele2 = page2.query_selector('//*[@id="root"]/div/div/div[2]/div[1]/div[13]/div[1]/div/div[2]/div/input')
-            ele2.hover()
-            ele2.click()
+            # ele2 = page2.query_selector('//*[@id="root"]/div/div/div[2]/div[1]/div[13]/div[1]/div/div[2]/div/input')
+            # ele2.hover()
+            # ele2.click()
 
             ele3 = page2.query_selector('//*[@id="root"]/div/div/div[2]/div[1]/div[15]/div/label[2]/input')
             ele3.hover()
@@ -108,6 +107,5 @@ while True:
     except Exception as e:
         pass
 
-time.sleep(3)
 browser.close()
 playwright.stop()

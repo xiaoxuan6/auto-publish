@@ -51,47 +51,62 @@ page1 = context.new_page()
 page1.goto('https://www.douyin.com/?recommend=1')
 time.sleep(10)
 
-page2 = context.new_page()
-page2.goto('https://creator.douyin.com/creator-micro/content/upload?enter_from=dou_web')
-time.sleep(15)
+i = 0
+while True:
+    if i == 3:
+        print('重试次数过多！')
+        break
 
-page2.wait_for_selector('.box-s0--3Jb4Q')
-pwd = os.getcwd()
-page2.on("filechooser", lambda file_chooser: file_chooser.set_files(f"{pwd}/video.mp4"))
-
-ele = page2.query_selector('.upload-btn--9eZLd')
-ele.hover()
-ele.click()
-page2.wait_for_timeout(1000 * 30)
-
-content = ""
-try:
-    content = page2.locator('.contentWrapper--2uqyj').text_content()
-except Exception as e:
     try:
-        content = page2.locator('.titleWrapper--QZrQx').text_content()
-    except Exception as e:
+        page2 = context.new_page()
+        page2.goto('https://creator.douyin.com/creator-micro/content/upload?enter_from=dou_web')
+        time.sleep(15)
+
+        page2.wait_for_selector('.box-s0--3Jb4Q')
+        pwd = os.getcwd()
+        page2.on("filechooser", lambda file_chooser: file_chooser.set_files(f"{pwd}/video.mp4"))
+
+        ele = page2.query_selector('.upload-btn--9eZLd')
+        ele.hover()
+        ele.click()
+        page2.wait_for_timeout(1000 * 30)
+
+        content = ""
         try:
-            content = page2.locator('.title--D-m_G').text_content()
+            content = page2.locator('.contentWrapper--2uqyj').text_content()
         except Exception as e:
-            pass
+            try:
+                content = page2.locator('.titleWrapper--QZrQx').text_content()
+            except Exception as e:
+                try:
+                    content = page2.locator('.title--D-m_G').text_content()
+                except Exception as e:
+                    pass
 
-print(f"content：{content}")
-if content.startswith('检测通过') or content.startswith('视频检测失败') or content.startswith('封面优化建议'):
-    ele2 = page2.query_selector('//*[@id="root"]/div/div/div[2]/div[1]/div[13]/div[1]/div/div[2]/div/input')
-    ele2.hover()
-    ele2.click()
+        print(f"content：{content}")
+        if len(content) == 0:
+            i = i + 1
+            download_video('video.mp4')
+            raise Exception("无法识别检测结果")
 
-    ele3 = page2.query_selector('//*[@id="root"]/div/div/div[2]/div[1]/div[15]/div/label[2]/input')
-    ele3.hover()
-    ele3.click()
+        if content.startswith('检测通过') or content.startswith('视频检测失败') or content.startswith('封面优化建议'):
+            ele2 = page2.query_selector('//*[@id="root"]/div/div/div[2]/div[1]/div[13]/div[1]/div/div[2]/div/input')
+            ele2.hover()
+            ele2.click()
 
-    # page2.fill('//*[@id="root"]/div/div/div[2]/div[1]/div[2]/div/div/div/div[1]/div/div/input', '测试')
-    page2.query_selector('//*[@id="root"]/div/div/div[2]/div[1]/div[17]/button[1]').click()
-    print('发布成功！')
-else:
-    print("视频未审核通过！")
-    exit(1)
+            ele3 = page2.query_selector('//*[@id="root"]/div/div/div[2]/div[1]/div[15]/div/label[2]/input')
+            ele3.hover()
+            ele3.click()
+
+            # page2.fill('//*[@id="root"]/div/div/div[2]/div[1]/div[2]/div/div/div/div[1]/div/div/input', '测试')
+            page2.query_selector('//*[@id="root"]/div/div/div[2]/div[1]/div[17]/button[1]').click()
+            print('发布成功！')
+            break
+        else:
+            print("视频未审核通过！")
+            break
+    except Exception as e:
+        pass
 
 time.sleep(3)
 browser.close()

@@ -62,10 +62,29 @@ page2.on("filechooser", lambda file_chooser: file_chooser.set_files(f"{pwd}/vide
 ele = page2.query_selector('.upload-btn--9eZLd')
 ele.hover()
 ele.click()
-page2.wait_for_timeout(1000 * 60)
+page2.wait_for_timeout(1000 * 30)
 
-content = page2.locator('.contentWrapper--2uqyj').text_content()
-if content.startswith('检测通过'):
+content = ""
+try:
+    content = page2.locator('.contentWrapper--2uqyj').text_content()
+except Exception as e:
+    try:
+        content = page2.locator('.titleWrapper--QZrQx').text_content()
+    except Exception as e:
+        try:
+            content = page2.locator('.title--D-m_G').text_content()
+        except Exception as e:
+            pass
+
+if content.startswith('检测通过') or content.startswith('视频检测失败') or content.startswith('封面优化建议'):
+    ele2 = page2.query_selector('//*[@id="root"]/div/div/div[2]/div[1]/div[13]/div[1]/div/div[2]/div/input')
+    ele2.hover()
+    ele2.click()
+
+    ele3 = page2.query_selector('//*[@id="root"]/div/div/div[2]/div[1]/div[15]/div/label[2]/input')
+    ele3.hover()
+    ele3.click()
+
     # page2.fill('//*[@id="root"]/div/div/div[2]/div[1]/div[2]/div/div/div/div[1]/div/div/input', '测试')
     page2.query_selector('//*[@id="root"]/div/div/div[2]/div[1]/div[17]/button[1]').click()
     print('发布成功！')

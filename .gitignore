@@ -2,3 +2,7 @@
 .env
 douyin_cookie.txt
 *.mp4
+build
+dist
+main.spec
+__pycache__/

@@ -16,10 +16,18 @@ def download_video(save_path):
     urls = (
         "https://api.shenke.love/api/gzl.php",
         "https://api.shenke.love/api/mnsp.php?msg=xjj&type=video",
-        "http://api.yujn.cn/api/heisis.php",
-        'http://api.yujn.cn/api/xjj.php',
-        'http://api.yujn.cn/api/zzxjj.php',
-        'https://api.yujn.cn/api/manzhan.php'
+        "https://api.yujn.cn/api/heisis.php",
+        'https://api.yujn.cn/api/xjj.php',
+        'https://api.yujn.cn/api/zzxjj.php',
+        'https://api.yujn.cn/api/manzhan.php',
+        'https://qtkj.love/api/ycyy.php',
+        'https://qtkj.love/api/tmxl.php',
+        'https://qtkj.love/api/slxl.php',
+        'https://qtkj.love/api/ndym.php',
+        'https://qtkj.love/api/llxl.php',
+        'https://qtkj.love/api/kdbz.php',
+        'https://qtkj.love/api/hbss.php',
+        'https://qtkj.love/api/gjzs.php'
     )
 
     url = random.choice(urls)
@@ -40,7 +48,7 @@ if not os.path.exists('video.mp4'):
     exit(1)
 
 playwright = sync_playwright().start()
-browser = playwright.chromium.launch(headless=True)
+browser = playwright.chromium.launch(headless=False)
 
 context = browser.new_context()
 with open("douyin_cookie.txt") as f:

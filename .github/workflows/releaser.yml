@@ -7,7 +7,7 @@ on:
 
 jobs:
   releaser:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
       - name: Set up Python
@@ -18,8 +18,9 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-          PLAYWRIGHT_BROWSERS_PATH=0 playwright install chromium
-          pip install -i https://pypi.douban.com/simple/ pyinstaller
+          # PLAYWRIGHT_BROWSERS_PATH=0 playwright install chromium
+          playwright install --path $env:PLAYWRIGHT_BROWSERS_PATH chromium
+          python -m pip install pyinstaller
           pyinstaller -F main.py
       - name: Create Release
         uses: actions/create-release@v1.1.4
